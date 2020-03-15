@@ -4,24 +4,22 @@
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link rel="shortcut icon" href="https://www.favicon.cc/logo3d/131633.png" />
+  
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
   {% block head %}
-    <title>GYM Manager</title>
+    <title>Launchstore</title>
   {% endblock %}
 
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header>
-    <div class="links">
-      <a href="/instructors">Instrutores</a>
-      <a href="/members">Membros</a>
-    </div>
-  </header>
+
+  {% include "parts/header.njk" %}
 
   {% block content %}{% endblock %}
 
-  <script src="/scripts.js"></script>
+  {% include "parts/footer.njk" %}
 
 </body>
 </html>
