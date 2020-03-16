@@ -6,8 +6,11 @@ routes.get("/", function(req, res){
   return res.render("layout")
 });
 
-routes.get("/products/create", ProductController.create );
+routes.get("/products/create", ProductController.create);
+routes.post("/products", ProductController.post);
 
+
+//Alias
 routes.get("/ads/create", function(req, res){
   return res.render("/products/create")
 });
