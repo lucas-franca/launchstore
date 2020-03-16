@@ -32,7 +32,7 @@ module.exports = {
     results = await Category.all();
     const categories = results.rows;
 
-    return res.redirect(`/products/${productId}`);
+    return res.redirect(`/products/${productId}/edit`);
 
   },
   async edit(req, res){
