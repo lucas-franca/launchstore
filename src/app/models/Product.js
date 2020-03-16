@@ -30,5 +30,8 @@ module.exports = {
     ]
     
     return db.query(query, values)
+  },
+  find(id){
+    return db.query('SELECT * FROM products where ID = $1', [id]);
   }
 }
