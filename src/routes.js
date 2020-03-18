@@ -15,8 +15,6 @@ routes.put("/products", multer.array("photos", 6), ProductController.put);
 routes.delete("/products", ProductController.delete);
 
 //Alias
-routes.get("/ads/create", function(req, res){
-  return res.render("/products/create")
-});
+routes.get("/ads/create", ProductController.create);
 
 module.exports = routes;

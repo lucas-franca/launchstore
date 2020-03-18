@@ -2,6 +2,7 @@ const { formatPrice } = require('../../lib/utils.js');
 
 const Category = require('../models/Category');
 const Product = require('../models/Product');
+const File = require('../models/File');
 
 module.exports = {
   create(req, res){
@@ -9,7 +10,7 @@ module.exports = {
     .then(function(results){
       const categories = results.rows;
 
-      return res.render("products/create.njk", { categories });
+      return res.render("products/create", { categories });
       
     })
     .catch(function(err){
@@ -25,15 +26,18 @@ module.exports = {
         return res.send('Por favor, preencha todos os campos!')
       }
     }
+    
+    if (req.files.length == 0){
+      return res.send('Por favor, envie ao menos uma imagem!')
+    }
 
     let results = await Product.create(req.body);
     const productId = results.rows[0].id;
 
-    results = await Category.all();
-    const categories = results.rows;
-
+    const filesPromise = req.files.map(file => File.create({...file, product_id: productId}));
+    await Promise.all(filesPromise);
+  
     return res.redirect(`/products/${productId}/edit`);
-
   },
   async edit(req, res){
     let results = await Product.find(req.params.id);
@@ -47,7 +51,7 @@ module.exports = {
     results = await Category.all();
     const categories = results.rows;
 
-    return res.render("products/edit.njk", { product, categories });
+    return res.render("products/edit", { product, categories });
   },
   async put(req, res){
     const keys = Object.keys(req.body)
@@ -68,7 +72,7 @@ module.exports = {
 
     await Product.update(req.body)
 
-    return res.redirect(`/products/${req.body.id}/edit`)
+    return res.redirect(`products/${req.body.id}/edit`)
   },
   async delete(req, res){
     await Product.delete(req.body.id)
