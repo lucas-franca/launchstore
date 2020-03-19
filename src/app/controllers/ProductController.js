@@ -55,8 +55,14 @@ module.exports = {
     product.price =  formatPrice(product.price);
     product.oldPrice = formatPrice(product.old_price);
 
-    
-    return res.render("products/show", { product })
+    results = await Product.files(product.id);
+    const files = results.rows.map(file => ({
+      ...file,
+      src: `${req.protocol}://${req.headers.host}${file.path.replace("public","")}`
+    }))
+
+
+    return res.render("products/show", { product, files })
   },
   async edit(req, res){
     let results = await Product.find(req.params.id);
@@ -117,7 +123,7 @@ module.exports = {
 
     await Product.update(req.body)
 
-    return res.redirect(`products/${req.body.id}/edit`)
+    return res.redirect(`products/${req.body.id}`)
   },
   async delete(req, res){
     await Product.delete(req.body.id)
