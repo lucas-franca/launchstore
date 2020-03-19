@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS launchstore;
+CREATE DATABASE launchstore;
+
 CREATE TABLE "products" (
   "id" SERIAL PRIMARY KEY,
   "category_id" int NOT NULL,
@@ -24,11 +27,24 @@ CREATE TABLE "files" (
   "product_id" int
 );
 
+CREATE TABLE "users" (
+  "id" SERIAL PRIMARY KEY,
+  "name" int NOT NULL,
+  "email" text UNIQUE NOT NULL,
+  "password" text NOT NULL,
+  "cpf_cnpj" int UNIQUE NOT NULL,
+  "cep" text,
+  "address" text,
+  "created_at" timestamp DEFAULT (now()),
+  "updated_at" timestamp DEFAULT (now())
+);
+
 ALTER TABLE "products" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "files" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
---FUNCTION trigger_set_timestamp
+--PROCEDURE trigger_set_timestamp
 CREATE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -37,8 +53,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---TRIGGER to set new timestamp on column "products.UPDATED_AT"
+--TRIGGER auto updated_at products
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON products
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+--TRIGGER auto updated_at users
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON users
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
