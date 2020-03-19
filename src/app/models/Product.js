@@ -44,13 +44,13 @@ module.exports = {
     const query= `
       UPDATE products SET
         category_id = ($1),
-        user_id=($2),
-        name=($3),
-        description=($4),
-        old_price=($5),
-        price=($6),
-        quantity=($7),
-        status=($8)
+        user_id = ($2),
+        name = ($3),
+        description = ($4),
+        old_price = ($5),
+        price = ($6),
+        quantity = ($7),
+        status = ($8)
       WHERE id = $9
     ` 
 
@@ -75,5 +75,33 @@ module.exports = {
     return db.query(`
       SELECT * FROM files WHERE product_id = $1
     `, [id])
+  },
+  search(params){
+    const { filter, category } = params;
+
+    let query = "",
+      filterQuery = `WHERE`;
+
+    if(category){
+      filterQuery = `${filterQuery}
+      products.category_id = ${category}
+      AND
+      `
+    }
+
+    filterQuery = `
+      ${filterQuery} products.name ilike '%${filter}%'
+      OR products.description ilike '%${filter}%'
+    `;
+
+    query = `
+      SELECT products.*,
+        categories.name AS category_name
+      FROM products
+      LEFT JOIN categories ON categories.id = products.category_id
+      ${filterQuery}
+    `
+
+    return db.query(query);
   }
 }
