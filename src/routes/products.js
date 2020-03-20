@@ -7,7 +7,7 @@ const SearchController = require("../app/controllers/SearchController");
 
 
 //Search
-routes.get('/products/search', SearchController.index);
+routes.get('/search', SearchController.index);
 
 //Products
 routes.get("/create", ProductController.create);
